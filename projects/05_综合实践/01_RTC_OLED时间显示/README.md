@@ -1,8 +1,8 @@
-# RTC + OLED 时间显示
+# RTC + OLED 时间显示（课程整合工程）
 
 ## 项目简介
 
-PCF8563 提供日期和时间，OLED 显示格式化结果。工程同时使用 STC8 硬件 I²C 访问 RTC，并使用 GPIO 模拟 I²C 驱动 OLED。
+PCF8563 提供日期和时间，OLED 显示格式化结果。工程把 RTC 硬件 I²C 和 OLED 软件 I²C 放入同一个 Keil 项目，用于分析多驱动整合和引脚资源冲突。
 
 ## 硬件环境
 
@@ -10,6 +10,8 @@ PCF8563 提供日期和时间，OLED 显示格式化结果。工程同时使用 
 - RTC：PCF8563
 - 显示：0.96 英寸 OLED
 - 调试：UART1
+- RTC 硬件 I²C：P3.2/P3.3
+- OLED 软件 I²C：P3.2/P3.3，RESET 使用 P1.2
 
 ![硬件 I²C 与软件 I²C](../../../assets/images/hardware-software-i2c.png)
 
@@ -31,13 +33,20 @@ oled.c          软件 I²C 显示输出
 
 `PCF8563 registers -> hardware I²C -> RTC_Time -> formatted strings -> software I²C -> OLED`
 
+代码的数据处理路径是完整的，但两个 I²C 实现都操作 P3.2/P3.3。硬件 I²C 外设启用后，OLED 位操作再次改变同一组引脚，构成实际资源冲突。
+
 ## 关键实现
 
-硬件 I²C 和软件 I²C 使用不同驱动路径，避免两个设备库争用同一套接口实现。RTC 负责 BCD/十进制转换，应用层只处理格式化和页面布局。
+RTC 模块负责 BCD/十进制转换，应用层使用 `sprintf()` 生成日期和时间字符串，再交给 OLED API。驱动文件虽然独立，但物理引脚没有分离；后续个人工程需要移动 OLED 软件 I²C 引脚，或让两个设备共享一套可寻址的 I²C 总线实现。
 
 ## 调试记录
 
-课程整合时处理了延时函数、寄存器头文件和整数类型的重复定义。当前 `main.c` 仍在启动时写固定 RTC 时间，实际长期运行版本应将初始化与日常读取分开。
+课程整合时处理了延时函数、寄存器头文件和整数类型的重复定义。当前还存在两项需要在个人版本中处理的问题：
+
+- RTC 与 OLED 同时占用 P3.2/P3.3。
+- `main.c` 每次启动都调用 `RTC_WriteTime()` 写入固定时间。
+
+因此该工程保留为课程整合与资源分析案例，不记录板端运行结论。修正后的资源方案见 [STC8 Smart Terminal 设计](../../../docs/smart-terminal-design.md)。
 
 ## 来源说明
 
