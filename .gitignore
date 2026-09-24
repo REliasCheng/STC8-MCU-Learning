@@ -1,0 +1,45 @@
+# Keil C51 build output
+Objects/
+Listings/
+obj/
+*.hex
+*.obj
+*.o
+*.lst
+*.m51
+*.map
+*.lnp
+*.plg
+*.crf
+*.d
+*.dep
+*.bak
+*.orig
+*.build_log.htm
+
+# Keil user state
+*.uvopt
+*.uvoptx
+*.uvgui.*
+
+# Editors and operating systems
+.vscode/
+.vs/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.tmp
+*.swp
+*~
+
+# Packages and tools
+*.zip
+*.rar
+*.7z
+*.exe
+*.msi
+*.dll
+
+# Legacy target image without an extension
+projects/02_外设驱动/07_OLED显示/course/OLED

@@ -1,0 +1,9 @@
+* text=auto
+*.c text
+*.h text
+*.a51 text
+*.md text eol=lf
+projects/**/course/** -text
+*.png binary
+*.jpg binary
+*.jpeg binary
