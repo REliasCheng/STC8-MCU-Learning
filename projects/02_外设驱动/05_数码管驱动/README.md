@@ -11,7 +11,7 @@
 - 锁存时钟：P4.3 / `NIX_RCK`
 - 外设：74HC595 与多位数码管
 
-![74HC595 移位与锁存](../../../assets/images/74hc595-shift-latch.png)
+![74HC595 移位与锁存](../../../assets/images/diagram/74hc595-shift-latch.png)
 
 ## 软件结构
 

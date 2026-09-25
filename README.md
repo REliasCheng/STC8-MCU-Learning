@@ -1,10 +1,12 @@
 # STC8 MCU Embedded Development
 
-基于 STC8H8K64U 的增强型 8051 工程实践，包含 GPIO、Timer、UART、PWM、ADC、RTC、OLED、传感器、USB HID 和 RTX51 Tiny。14 个 Keil C51 工程按硬件接口和软件结构分类，课程源码保存在各项目的 `course/`。
+## Overview
 
-![STC8H8K64U 核心板原理图](assets/images/stc8h8k64u-core-board-schematic.png)
+基于 STC8H8K64U 的增强型 8051 工程实践，包含 GPIO、Timer、UART、PWM、ADC、RTC、OLED、传感器、USB HID 和 RTX51 Tiny。14 个 Keil C51 工程按硬件接口和软件结构分类，可直接从各项目的 `course/` 打开。
 
-## Architecture Overview
+![STC8H8K64U 核心板原理图](assets/images/hardware/stc8h8k64u-core-board-schematic.png)
+
+## Architecture
 
 后期工程逐步将应用流程、功能模块和底层外设分开：
 
@@ -28,7 +30,7 @@ STC8 Hardware
 寄存器控制 → 外设驱动 → 模块封装 → 事件管理 → 多外设系统 → 任务调度
 ```
 
-## Core Projects
+## Technical Highlights
 
 | 项目 | 实现 |
 | --- | --- |
@@ -39,8 +41,6 @@ STC8 Hardware
 | [UART 通信](projects/03_通信接口/01_UART通信/) | UART1 ISR、128-byte 接收缓冲和空闲超时 |
 | [RTX51 Tiny](projects/04_软件设计/01_RTX51_Tiny/) | task、tick、signal 和 UART 事件协作 |
 | [RTC + OLED 整合](projects/05_综合实践/01_RTC_OLED时间显示/) | 时间读取、格式化显示及 I²C 资源冲突分析 |
-
-[STC8 Smart Terminal 设计](docs/smart-terminal-design.md)把 RTC、温湿度、按键、OLED、UART 和片内 EEPROM 映射到统一的应用状态与周期任务。当前内容是基于已有驱动接口完成的资源设计，尚未建立可构建的板端工程。
 
 ## Peripheral Examples
 
@@ -66,11 +66,39 @@ STC8 Hardware
 
 P3.0/P3.1 通过板载开关在 UART 与 USB D-/D+ 路径之间切换。P5.3 连接板载 LED，P3.2 连接板载按键，P2.4/P2.5 连接板载串行存储器；组合工程需要先核对引脚复用和定时器占用。
 
-## Build
+## Project Structure
+
+```text
+projects/01_MCU基础/   GPIO 与寄存器入口
+projects/02_外设驱动/ Timer、PWM、ADC、按键、显示、RTC、传感器与 IAP
+projects/03_通信接口/ UART 与 USB HID
+projects/04_软件设计/ RTX51 Tiny 任务协作
+projects/05_综合实践/ RTC 与 OLED 组合工程
+docs/                 架构、引脚复用、构建和调试说明
+assets/images/        原理图、数据流和工程结构图
+```
+
+## Build / Run
 
 1. 进入项目的 `course/`，使用 Keil µVision 打开 `.uvproj`。
 2. 确认目标器件、`Config.h` 主频和 C51 Include Paths。
 3. 构建 HEX，通过 STC-ISP 选择对应芯片、IRC 频率和串口下载。
 4. UART 或 USB HID 运行前，切换核心板上的通信模式开关。
 
-仓库不跟踪 HEX、OBJ、LST、M51 等日常构建产物。硬件连接、工程演进和已知问题见 [docs](docs/)，课程及第三方来源见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+仓库不跟踪 HEX、OBJ、LST、M51 等日常构建产物。
+
+## Documentation
+
+- [文档索引](docs/README.md)
+- [核心板与引脚复用](docs/核心板与引脚复用.md)
+- [工程结构演进](docs/工程结构演进.md)
+- [开发环境与构建](docs/开发环境与构建.md)
+- [调试记录](docs/调试记录.md)
+- [Smart Terminal 资源设计](docs/smart-terminal-design.md)
+- [来源与许可](THIRD_PARTY_NOTICES.md)
+
+## Related Projects
+
+- [C51-Board-Lab](https://github.com/REliasCheng/C51-Board-Lab)：51 开天开发板硬件资源与板级实验。
+- [stc89c52-learning](https://github.com/REliasCheng/stc89c52-learning)：STC89C52RC 外设驱动与多外设应用。
+- [BlueBridgeCup-MCU](https://github.com/REliasCheng/BlueBridgeCup-MCU)：CT107D 资源分配与竞赛综合工程。

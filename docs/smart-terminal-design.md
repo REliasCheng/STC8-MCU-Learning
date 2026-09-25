@@ -1,6 +1,6 @@
-# STC8 Smart Terminal 设计
+# STC8 Smart Terminal 资源设计
 
-这份设计把仓库中已经存在的 RTC、DHT11、OLED、按键、UART 和片内 EEPROM 接口组织成一个多页面信息终端。当前完成的是接口核对、资源分配和任务设计；仓库中还没有对应的 Keil 工程或板端运行记录。
+这份文档把 RTC、DHT11、OLED、按键、UART 和片内 EEPROM 接口映射到多页面信息终端，定义应用状态、资源分配、任务周期和板级集成检查点。
 
 ## 系统结构
 
@@ -26,7 +26,7 @@ Hardware
 
 ## 现有接口映射
 
-| 服务 | 已有接口 | 原工程 | 计划资源 |
+| 服务 | 已有接口 | 工程入口 | 资源分配 |
 | --- | --- | --- | --- |
 | ClockService | `RTC_Init()`、`RTC_ReadTime()`、`RTC_WriteTime()` | [RTC 时间系统](../projects/02_外设驱动/06_RTC时间系统/) | PCF8563，硬件 I²C P3.2/P3.3 |
 | SensorService | `DHT11_Init()`、`DHT11_GetTempAndHumidity()` | [DHT11](../projects/02_外设驱动/08_DHT11/) | P4.6，1 s 采样周期 |
@@ -74,18 +74,16 @@ PAGE_SETTINGS    页面切换、显示选项和时间设置
 
 ## 资源冲突
 
-1. 课程 `RTC + OLED` 工程同时把硬件 I²C 和 OLED 软件 I²C 映射到 P3.2/P3.3。终端设计保留 RTC 的硬件 I²C，并把 OLED 软件 I²C 移到 P1.4/P1.5。
+1. `RTC + OLED` 参考工程同时把硬件 I²C 和 OLED 软件 I²C 映射到 P3.2/P3.3。终端设计保留 RTC 的硬件 I²C，并把 OLED 软件 I²C 移到 P1.4/P1.5。
 2. P3.2 还连接板载按键，使用 PCF8563 时不再把该按键作为应用输入。
 3. P5.3 连接板载 LED，独立按键只选用 P5.1、P5.2、P5.4，或在个人工程中重新分配引脚。
 4. UART1 使用 Timer1 生成波特率；Timer0 留给系统 tick，避免两个功能争用同一定时器。
-5. 课程 EEPROM 头文件把 `MCU_Type` 配置为 `STC8X1K08`。建立 STC8H8K64U 工程前必须依据目标芯片手册重新确认 IAP 地址和保留区域。
+5. EEPROM 头文件把 `MCU_Type` 配置为 `STC8X1K08`。STC8H8K64U 工程需要依据目标芯片手册重新确认 IAP 地址和保留区域。
 
 ## 实现检查点
 
-- 建立独立 `practice/` 工程并保留原课程项目不变。
+- 在 `practice/` 中建立独立 Keil 工程。
 - 修正按键回调的按下/释放语义后再接入事件层。
 - 为 OLED 分配新的软件 I²C 引脚并核对外接连线。
 - 确认 STC8H8K64U 的 IAP 区域、扇区大小和掉电保存策略。
-- 通过 Keil 构建后，再进行 RTC 走时、DHT11 时序、UART 命令和 EEPROM 读回测试。
-
-在这些检查点完成前，本页只描述可实施的系统设计，不代表已经完成板端联调。
+- 通过 Keil 构建后，依次执行 RTC 走时、DHT11 时序、UART 命令和 EEPROM 读回测试。

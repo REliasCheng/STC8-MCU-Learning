@@ -12,11 +12,11 @@
 
 `assets/images/` 中的核心板原理图、GPIO 模式图、UART 帧图、74HC595 图和 I²C 图来自课程配套资料或板卡资料，仅作为硬件与代码关系的参考：
 
-- `stc8h8k64u-core-board-schematic.png`
-- `gpio-mode-registers.png`
-- `uart-frame.png`
-- `74hc595-shift-latch.png`
-- `hardware-software-i2c.png`
+- `hardware/stc8h8k64u-core-board-schematic.png`
+- `diagram/gpio-mode-registers.png`
+- `diagram/uart-frame.png`
+- `diagram/74hc595-shift-latch.png`
+- `diagram/hardware-software-i2c.png`
 
 这些图片不是个人实拍，也不属于根目录 MIT License 的授权范围。
 

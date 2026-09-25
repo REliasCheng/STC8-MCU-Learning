@@ -10,7 +10,7 @@ UART1 使用 Timer1 产生 115200 baud，接收中断把字节写入缓冲区，
 - UART1：P3.0/RXD、P3.1/TXD
 - USB 转串口：板载 CH340N
 
-![UART 帧结构](../../../assets/images/uart-frame.png)
+![UART 帧结构](../../../assets/images/diagram/uart-frame.png)
 
 ## 软件结构
 

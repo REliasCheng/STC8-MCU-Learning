@@ -10,7 +10,7 @@
 - 输出：P5.3 板载 LED
 - GPIO 模式：`GPIO_OUT_PP`
 
-![GPIO 模式寄存器关系](../../../assets/images/gpio-mode-registers.png)
+![GPIO 模式寄存器关系](../../../assets/images/diagram/gpio-mode-registers.png)
 
 ## 软件结构
 

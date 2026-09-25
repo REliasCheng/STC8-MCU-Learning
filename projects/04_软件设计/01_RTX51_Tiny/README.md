@@ -35,7 +35,7 @@ task_uart (_task_ 2)  -> UART buffer / os_send_signal(1)
 
 ## 调试记录
 
-课程记录的常见问题包括多目录 Include Path 缺失，以及同时保留普通 `main()` 导致 `MULTIPLE PUBLIC DEFINITIONS: MAIN`。本工程说明的是 RTX51 Tiny 的静态任务与信号协作，不等同于完整 RTOS 项目。
+常见构建问题包括多目录 Include Path 缺失，以及同时保留普通 `main()` 导致 `MULTIPLE PUBLIC DEFINITIONS: MAIN`。本工程聚焦 RTX51 Tiny 的静态任务、超时等待和信号协作。
 
 ## 来源说明
 

@@ -13,7 +13,7 @@ PCF8563 提供日期和时间，OLED 显示格式化结果。工程把 RTC 硬�
 - RTC 硬件 I²C：P3.2/P3.3
 - OLED 软件 I²C：P3.2/P3.3，RESET 使用 P1.2
 
-![硬件 I²C 与软件 I²C](../../../assets/images/hardware-software-i2c.png)
+![硬件 I²C 与软件 I²C](../../../assets/images/diagram/hardware-software-i2c.png)
 
 ## 软件结构
 
