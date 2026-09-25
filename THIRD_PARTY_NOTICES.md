@@ -2,7 +2,7 @@
 
 ## 课程示例
 
-`projects/**/course/` 保存 STC8 增强型单片机课程中的代表性学习工程。代码用于记录课程实践和技术分析，不声明为仓库维护者独立原创，也不由根目录 MIT License 重新授权。
+`projects/**/course/` 保存 STC8 增强型单片机课程中的代表性工程，继续适用原提供方的许可条件。
 
 ## STC 厂商内容
 
@@ -18,8 +18,4 @@
 - `diagram/74hc595-shift-latch.png`
 - `diagram/hardware-software-i2c.png`
 
-这些图片不是个人实拍，也不属于根目录 MIT License 的授权范围。
-
-## 未收录内容
-
-完整视频、课件 PDF、Word 文档、芯片手册副本、STC 官方 Demo 整包、OLED 厂商整包、安装程序、驱动程序、播放器和工具软件均未纳入仓库。
+这些图片来自课程配套资料或板卡资料，继续适用其原始许可条件。根目录 MIT License 适用于仓库维护者编写的文档和代码。
