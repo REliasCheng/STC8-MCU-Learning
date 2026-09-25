@@ -30,6 +30,10 @@ STC8 Hardware
 寄存器控制 → 外设驱动 → 模块封装 → 事件管理 → 多外设系统 → 任务调度
 ```
 
+| UART 帧结构 | 硬件与软件 I²C 路径 |
+| --- | --- |
+| ![UART 帧结构](assets/images/diagram/uart-frame.png) | ![硬件与软件 I²C 路径](assets/images/diagram/hardware-software-i2c.png) |
+
 ## Technical Highlights
 
 | 项目 | 实现 |
