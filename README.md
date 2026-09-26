@@ -1,12 +1,12 @@
 # STC8 MCU Embedded Development
 
-## Overview
+## 👋 项目简介 | Overview
 
 基于 STC8H8K64U 的增强型 8051 工程实践，包含 GPIO、Timer、UART、PWM、ADC、RTC、OLED、传感器、USB HID 和 RTX51 Tiny。14 个 Keil C51 工程按硬件接口和软件结构分类，可直接从各项目的 `course/` 打开。
 
 ![STC8H8K64U 核心板原理图](assets/images/hardware/stc8h8k64u-core-board-schematic.png)
 
-## Architecture
+## 🧠 系统架构 | Architecture
 
 后期工程逐步将应用流程、功能模块和底层外设分开：
 
@@ -34,7 +34,7 @@ STC8 Hardware
 | --- | --- |
 | ![UART 帧结构](assets/images/diagram/uart-frame.png) | ![硬件与软件 I²C 路径](assets/images/diagram/hardware-software-i2c.png) |
 
-## Technical Highlights
+## 🚀 核心项目 | Featured Projects
 
 | 项目 | 实现 |
 | --- | --- |
@@ -46,7 +46,7 @@ STC8 Hardware
 | [RTX51 Tiny](projects/04_软件设计/01_RTX51_Tiny/) | task、tick、signal 和 UART 事件协作 |
 | [RTC + OLED 整合](projects/05_综合实践/01_RTC_OLED时间显示/) | 时间读取、格式化显示及 I²C 资源冲突分析 |
 
-## Peripheral Examples
+## ⚙ 外设示例 | Peripheral Examples
 
 | 项目 | 实现 |
 | --- | --- |
@@ -58,7 +58,7 @@ STC8 Hardware
 | [EEPROM/IAP](projects/02_外设驱动/09_EEPROM_IAP/) | 片内 IAP 擦除、写入和读取接口 |
 | [USB HID](projects/03_通信接口/02_USB_HID/) | 4×4 矩阵键盘和 8-byte HID 报告 |
 
-## Hardware and Tools
+## 🛠 硬件与工具 | Hardware and Tools
 
 | 项目 | 配置 |
 | --- | --- |
@@ -70,7 +70,7 @@ STC8 Hardware
 
 P3.0/P3.1 通过板载开关在 UART 与 USB D-/D+ 路径之间切换。P5.3 连接板载 LED，P3.2 连接板载按键，P2.4/P2.5 连接板载串行存储器；组合工程需要先核对引脚复用和定时器占用。
 
-## Project Structure
+## 📂 工程结构 | Repository Structure
 
 ```text
 projects/01_MCU基础/   GPIO 与寄存器入口
@@ -82,7 +82,7 @@ docs/                 架构、引脚复用、构建和调试说明
 assets/images/        原理图、数据流和工程结构图
 ```
 
-## Build / Run
+## 🔧 构建与下载 | Build / Run
 
 1. 进入项目的 `course/`，使用 Keil µVision 打开 `.uvproj`。
 2. 确认目标器件、`Config.h` 主频和 C51 Include Paths。
@@ -91,7 +91,7 @@ assets/images/        原理图、数据流和工程结构图
 
 仓库不跟踪 HEX、OBJ、LST、M51 等日常构建产物。
 
-## Documentation
+## 📖 技术文档 | Documentation
 
 - [文档索引](docs/README.md)
 - [核心板与引脚复用](docs/核心板与引脚复用.md)
@@ -101,7 +101,7 @@ assets/images/        原理图、数据流和工程结构图
 - [Smart Terminal 资源设计](docs/smart-terminal-design.md)
 - [来源与许可](THIRD_PARTY_NOTICES.md)
 
-## Related Projects
+## 🔗 相关项目 | Related Projects
 
 - [C51-Board-Lab](https://github.com/REliasCheng/C51-Board-Lab)：51 开天开发板硬件资源与板级实验。
 - [stc89c52-learning](https://github.com/REliasCheng/stc89c52-learning)：STC89C52RC 外设驱动与多外设应用。
