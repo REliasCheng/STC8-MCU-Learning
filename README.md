@@ -18,13 +18,13 @@
 
 > 📟 **Evidence:** Driver and integration paths documented · Build, hardware, and runtime evidence not provided
 
-## Overview
+## 📌 Overview
 
 仓库围绕 STC8H8K64U 的 GPIO、Timer、UART、PWM、ADC、RTC、OLED、传感器、USB HID 和 RTX51 Tiny 示例组织代码。各工程保持独立边界，用于查看从寄存器控制、外设驱动到模块封装、事件回调和任务协作的实现路径。
 
 这里展示的是可定位到源码和文档的固件机制，不把独立示例描述成已经完成的统一产品。组合不同模块前，需要重新核对引脚复用、定时器占用、通信模式和目标芯片配置。
 
-## Architecture
+## 🏗️ Architecture
 
 ```text
 Application
@@ -46,7 +46,7 @@ STC8 Hardware
 寄存器控制 → 外设驱动 → 模块封装 → 事件管理 → 多外设协作 → 任务调度
 ```
 
-## Key Features
+## ✨ Key Features
 
 | Capability | Implementation Entry |
 | --- | --- |
@@ -56,7 +56,7 @@ STC8 Hardware
 | Resource-aware integration | [RTC + OLED 整合](projects/05_综合实践/01_RTC_OLED时间显示/) 记录 I²C、引脚和板载资源之间的约束 |
 | Task interaction | [RTX51 Tiny](projects/04_软件设计/01_RTX51_Tiny/) 展示 task、tick、signal 与 UART 事件协作 |
 
-## Project Structure
+## 📂 Project Structure
 
 ```text
 STC8-MCU-Learning/
@@ -69,7 +69,7 @@ STC8-MCU-Learning/
 └── assets/images/         # 已有硬件与接口参考图
 ```
 
-## Documentation
+## 📚 Documentation
 
 - [文档索引](docs/README.md)
 - [核心板与引脚复用](docs/核心板与引脚复用.md)
@@ -78,21 +78,21 @@ STC8-MCU-Learning/
 - [调试记录](docs/调试记录.md)
 - [Smart Terminal 资源设计](docs/smart-terminal-design.md)：资源规划文档，当前不包含对应的集成工程源码
 
-## Verification
+## 🧪 Verification
 
-### Host Test
+### 💻 Host Test
 
 **Status:** Not Applicable. 工程面向 STC8 MCU，不包含 Host Test 入口。
 
-### Build Verification
+### 🔨 Build Verification
 
 **Status:** Not Provided. 仓库未提供与当前公开版本对应的可复现 Keil 构建记录。
 
-### Hardware Validation
+### 🔌 Hardware Validation
 
 **Status:** Not Provided. 当前公开文档未提供可复核的板端测试记录。
 
-### Runtime Evidence
+### 📊 Runtime Evidence
 
 **Status:** Not Provided. 当前仓库未提供串口日志、USB 枚举记录或测量结果作为运行证据。
 
