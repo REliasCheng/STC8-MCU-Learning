@@ -2,19 +2,21 @@
 
 基于 STC8H8K64U 的增强型 8051 固件与外设集成工程集合，重点展示驱动封装、事件处理、通信缓冲和板级资源约束。
 
+**⚙️ Peripheral Driver Progression**
+
 ![STC8 firmware learning map](assets/images/architecture/portfolio-overview.svg)
 
-## Project Snapshot
+## Firmware Snapshot
 
-| Field | Value |
+| Firmware Focus | Current Scope |
 | --- | --- |
-| Language | C |
-| Platform | STC8H8K64U, enhanced 8051 |
-| Toolchain | Keil C51 / µVision, STC-ISP |
-| Architecture | Bare-metal drivers, callbacks, interrupt buffers, RTX51 Tiny example |
-| Verification | Source and documentation review; build and hardware status are listed below |
+| MCU | STC8H8K64U，enhanced 8051 |
+| Driver Progression | Register → Driver → Module → Event → Integration |
+| Interfaces | GPIO、Timer、UART、I²C、ADC、PWM、USB HID |
+| Integration Model | Callbacks、interrupt buffers、RTX51 Tiny example |
+| Evidence | Source and documentation review；build and hardware evidence not provided |
 
-> **Project status:** Architecture documented · Host Test not applicable · Build, hardware, and runtime evidence not provided
+> 📟 **Evidence:** Driver and integration paths documented · Build, hardware, and runtime evidence not provided
 
 ## Overview
 
