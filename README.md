@@ -12,7 +12,7 @@
 
 | Field | Value |
 | --- | --- |
-| Language | C / Keil C51 |
+| Language | C |
 | Platform | STC8H8K64U, enhanced 8051 |
 | Toolchain | Keil C51 / µVision, STC-ISP |
 | Architecture | Bare-metal drivers, callbacks, interrupt buffers, RTX51 Tiny example |
@@ -76,10 +76,10 @@ STC8-MCU-Learning/
 
 | Verification Type | Status | Boundary |
 | --- | --- | --- |
-| Host Test | N/A | 工程面向 STC8 MCU，不包含 Host Test 入口 |
-| Build Verification | NOT VERIFIED | 本次 README 调整未执行 Keil 构建，仓库未提供当前公开快照的可复现构建日志 |
-| Hardware Validation | NOT VERIFIED | 当前公开文档未提供可复核的板端测试记录 |
-| Runtime Evidence | NOT INCLUDED | 当前仓库未提供串口日志、USB 枚举记录或测量结果作为运行证据 |
+| Host Test | Not Applicable | 工程面向 STC8 MCU，不包含 Host Test 入口 |
+| Build Verification | Not Provided | 仓库未提供与当前公开版本对应的可复现 Keil 构建记录 |
+| Hardware Validation | Not Provided | 当前公开文档未提供可复核的板端测试记录 |
+| Runtime Evidence | Not Provided | 当前仓库未提供串口日志、USB 枚举记录或测量结果作为运行证据 |
 
 构建和下载配置入口见[开发环境与构建](docs/开发环境与构建.md)。历史构建文件或工程文件存在，不等同于当前构建或硬件验证通过。
 
