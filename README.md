@@ -2,13 +2,9 @@
 
 基于 STC8H8K64U 的增强型 8051 固件与外设集成工程集合，重点展示驱动封装、事件处理、通信缓冲和板级资源约束。
 
-## Overview
+![STC8 firmware learning map](assets/images/architecture/portfolio-overview.svg)
 
-仓库围绕 STC8H8K64U 的 GPIO、Timer、UART、PWM、ADC、RTC、OLED、传感器、USB HID 和 RTX51 Tiny 示例组织代码。各工程保持独立边界，用于查看从寄存器控制、外设驱动到模块封装、事件回调和任务协作的实现路径。
-
-这里展示的是可定位到源码和文档的固件机制，不把独立示例描述成已经完成的统一产品。组合不同模块前，需要重新核对引脚复用、定时器占用、通信模式和目标芯片配置。
-
-## Platform & Technology
+## Project Snapshot
 
 | Field | Value |
 | --- | --- |
@@ -17,6 +13,14 @@
 | Toolchain | Keil C51 / µVision, STC-ISP |
 | Architecture | Bare-metal drivers, callbacks, interrupt buffers, RTX51 Tiny example |
 | Verification | Source and documentation review; build and hardware status are listed below |
+
+> **Project status:** Architecture documented · Host Test not applicable · Build, hardware, and runtime evidence not provided
+
+## Overview
+
+仓库围绕 STC8H8K64U 的 GPIO、Timer、UART、PWM、ADC、RTC、OLED、传感器、USB HID 和 RTX51 Tiny 示例组织代码。各工程保持独立边界，用于查看从寄存器控制、外设驱动到模块封装、事件回调和任务协作的实现路径。
+
+这里展示的是可定位到源码和文档的固件机制，不把独立示例描述成已经完成的统一产品。组合不同模块前，需要重新核对引脚复用、定时器占用、通信模式和目标芯片配置。
 
 ## Architecture
 
