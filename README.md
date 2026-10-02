@@ -74,12 +74,21 @@ STC8-MCU-Learning/
 
 ## Verification
 
-| Verification Type | Status | Boundary |
-| --- | --- | --- |
-| Host Test | Not Applicable | 工程面向 STC8 MCU，不包含 Host Test 入口 |
-| Build Verification | Not Provided | 仓库未提供与当前公开版本对应的可复现 Keil 构建记录 |
-| Hardware Validation | Not Provided | 当前公开文档未提供可复核的板端测试记录 |
-| Runtime Evidence | Not Provided | 当前仓库未提供串口日志、USB 枚举记录或测量结果作为运行证据 |
+### Host Test
+
+**Status:** Not Applicable. 工程面向 STC8 MCU，不包含 Host Test 入口。
+
+### Build Verification
+
+**Status:** Not Provided. 仓库未提供与当前公开版本对应的可复现 Keil 构建记录。
+
+### Hardware Validation
+
+**Status:** Not Provided. 当前公开文档未提供可复核的板端测试记录。
+
+### Runtime Evidence
+
+**Status:** Not Provided. 当前仓库未提供串口日志、USB 枚举记录或测量结果作为运行证据。
 
 构建和下载配置入口见[开发环境与构建](docs/开发环境与构建.md)。历史构建文件或工程文件存在，不等同于当前构建或硬件验证通过。
 
