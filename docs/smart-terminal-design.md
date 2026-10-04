@@ -22,19 +22,19 @@ Hardware
   PCF8563 / DHT11 / Keys / STC8 IAP / CH340N / SSD1306
 ```
 
-应用层只维护当前页面、时间、温湿度、设置项和刷新标志。各服务调用已经存在的驱动接口，不直接操作外设寄存器。
+应用层只维护当前页面、时间、温湿度、设置项和刷新标志。下表是设计接口与资源预算，不表示这些接口已在当前默认分支实现。
 
-## 现有接口映射
+## 设计接口映射
 
-| 服务 | 已有接口 | 工程入口 | 资源分配 |
-| --- | --- | --- | --- |
-| ClockService | `RTC_Init()`、`RTC_ReadTime()`、`RTC_WriteTime()` | [RTC 时间系统](../projects/02_外设驱动/06_RTC时间系统/) | PCF8563，硬件 I²C P3.2/P3.3 |
-| SensorService | `DHT11_Init()`、`DHT11_GetTempAndHumidity()` | [DHT11](../projects/02_外设驱动/08_DHT11/) | P4.6，1 s 采样周期 |
-| InputService | `KEY_Init()`、`KEY_Scan()` | [按键事件系统](../projects/02_外设驱动/04_按键事件系统/) | P5.1/P5.2/P5.4，避开板载 LED 的 P5.3 |
-| SettingsService | `EEPROM_SectorErase()`、`EEPROM_write_n()`、`EEPROM_read_n()` | [EEPROM/IAP](../projects/02_外设驱动/09_EEPROM_IAP/) | 片内 IAP，无外部引脚 |
-| CommandService | `UART_Configuration()`、`RX1_Buffer` | [UART 通信](../projects/03_通信接口/01_UART通信/) | UART1 P3.0/P3.1，Timer1，115200 baud |
-| UIService | `OLED_Init()`、`OLED_ShowString()`、`OLED_ShowNum()` | [OLED 显示](../projects/02_外设驱动/07_OLED显示/) | 软件 I²C 改用 P1.4/P1.5，RESET P1.2 |
-| Scheduler | `Timer_Inilize()`、`Handle_Timer0_Interrupt()` | [Timer 周期任务](../projects/02_外设驱动/01_Timer周期任务/) | Timer0，1 ms tick |
+| 服务 | 设计职责 | 资源预算 |
+| --- | --- | --- |
+| ClockService | RTC 初始化、读取与设置接口 | PCF8563 与一个 I²C 控制器或软件 I²C |
+| SensorService | 温湿度采样接口 | 一个 GPIO 与周期采样时隙 |
+| InputService | 按键扫描与事件生成 | 独立 GPIO，避开显示与通信引脚 |
+| SettingsService | 参数持久化接口 | 片内 IAP 区域，地址需按目标芯片确认 |
+| CommandService | UART 接收、分帧与命令解析 | UART、波特率定时资源与接收缓冲区 |
+| UIService | 页面渲染与差量刷新 | 显示总线、RESET 引脚与显存预算 |
+| Scheduler | 周期 tick 与任务标志 | 一个 Timer，中断只维护短路径状态 |
 
 ## 数据流
 
@@ -55,11 +55,11 @@ UART RX ──> CommandService ┘
 
 | 周期 | 任务 |
 | --- | --- |
-| 1 ms | Timer0 tick，仅更新计数和任务标志 |
-| 10 ms | 扫描按键并产生按下/释放事件 |
-| 20 ms | 检查 UART 接收空闲超时，提交完整命令 |
-| 200 ms | 刷新发生变化的 OLED 页面 |
-| 1 s | 读取 RTC 和 DHT11，更新状态 |
+| 1 ms（设计值） | Timer tick，仅更新计数和任务标志 |
+| 10 ms（设计值） | 扫描按键并产生按下/释放事件 |
+| 20 ms（设计值） | 检查 UART 接收空闲超时，提交完整命令 |
+| 200 ms（设计值） | 刷新发生变化的显示页面 |
+| 1 s（设计值） | 读取 RTC 和环境数据，更新状态 |
 | 配置变化后 | 延迟写入 EEPROM，而不是每次循环写入 |
 
 ## 页面与事件
@@ -74,15 +74,14 @@ PAGE_SETTINGS    页面切换、显示选项和时间设置
 
 ## 资源冲突
 
-1. `RTC + OLED` 参考工程同时把硬件 I²C 和 OLED 软件 I²C 映射到 P3.2/P3.3。终端设计保留 RTC 的硬件 I²C，并把 OLED 软件 I²C 移到 P1.4/P1.5。
-2. P3.2 还连接板载按键，使用 PCF8563 时不再把该按键作为应用输入。
-3. P5.3 连接板载 LED，独立按键只选用 P5.1、P5.2、P5.4，或在个人工程中重新分配引脚。
-4. UART1 使用 Timer1 生成波特率；Timer0 留给系统 tick，避免两个功能争用同一定时器。
-5. EEPROM 头文件把 `MCU_Type` 配置为 `STC8X1K08`。STC8H8K64U 工程需要依据目标芯片手册重新确认 IAP 地址和保留区域。
+1. RTC 与显示接口不能在未经核对时复用同一组 I²C 或 GPIO 资源。
+2. 板载按键、LED 与外接模块可能共享引脚，集成前必须对照实际原理图。
+3. UART 波特率发生器与系统 tick 不应争用同一定时器。
+4. IAP 地址、扇区大小和保留区域必须以目标芯片手册与实际链接布局为准。
 
 ## 集成约束
 
 - 按键回调接入事件层前需核对按下/释放参数语义。
-- OLED 需要分配新的软件 I²C 引脚并与外接连线一致。
+- 显示接口需要分配独立总线或软件 I²C 引脚，并与实际连线一致。
 - IAP 接口需要按 STC8H8K64U 手册核对地址、扇区大小和保留区域。
 - 集成工程需分别记录 RTC 走时、DHT11 时序、UART 命令和 EEPROM 读回结果。

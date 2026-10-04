@@ -1,6 +1,6 @@
-Scope notice
+Scope Notice
 
-This license applies only to original documentation and future personal code placed under practice/ by the repository maintainer. It does not apply to course examples under projects/**/course/ or to third-party source code, diagrams, startup files, vendor libraries, and hardware reference material. See THIRD_PARTY_NOTICES.md.
+This license applies only to maintainer-authored content in the current default branch. Third-party and vendor materials remain under their own terms and are not relicensed by this repository. See THIRD_PARTY_NOTICES.md.
 
 MIT License
 
