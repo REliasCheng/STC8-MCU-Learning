@@ -2,7 +2,6 @@
 
 #include "stc8_uart.h"
 
-#define STC8_UART1_INTERRUPT_NUMBER 4
 #define STC8_UART1_ROUTE_MASK 0xC0U
 #define STC8_UART1_MODE1_RECEIVE 0x50U
 #define STC8_AUXR_T2_RUN 0x10U
@@ -24,6 +23,7 @@ Stc8UartStatus stc8_uart1_init(const Stc8Uart1Config *config)
 
     if ((config->system_clock_hz == 0UL) ||
         (config->baud_rate == 0UL) ||
+        (config->pin_route < STC8_UART1_ROUTE_P30_P31) ||
         (config->pin_route > STC8_UART1_ROUTE_P43_P44))
     {
         return STC8_UART_INVALID_ARGUMENT;
@@ -106,7 +106,7 @@ Stc8UartStatus stc8_uart1_reset_rx_buffer(void)
     return status;
 }
 
-void stc8_uart1_isr(void) interrupt STC8_UART1_INTERRUPT_NUMBER
+void stc8_uart1_isr(void) interrupt 4
 {
     unsigned char received_byte;
 
