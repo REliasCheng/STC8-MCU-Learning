@@ -20,6 +20,16 @@ UART RX ISR                         Main Loop
 
 `head`、`tail` 和 `overflow` 使用 `volatile unsigned char`，适合 8-bit 目标上的单字节访问假设。`ring_buffer_take_overflow()` 是读取后清除操作；目标集成时若 UART RX ISR 可能同时置位，应在调用端用短临界区保护该操作。`ring_buffer_reset()` 也只能在初始化阶段或生产者暂停时调用。
 
+## Concurrency Contract
+
+- UART RX ISR 是唯一 producer，只调用 `ring_buffer_push_isr()` 并只修改 `head`。
+- 主循环是唯一 consumer，只调用 `ring_buffer_pop()` 并只修改 `tail`。
+- `ring_buffer_take_overflow()` 的读取与清零不是相对于 ISR 的原子操作；调用端必须在整个调用期间暂停 producer。
+- `ring_buffer_reset()` 同时改变 producer 与 consumer 状态，只能在 UART RX 中断关闭、producer 尚未启动或已经停止时调用。
+- `volatile` 用于保留跨 ISR/主循环的实际字节访问，不替代临界区，也不提供通用线程同步语义。
+
+STC8 UART1 集成层通过短暂关闭 UART1 中断使错误读取和缓冲区复位满足以上契约；可移植核心本身不依赖任何平台级中断控制。
+
 ## Capacity Model
 
 模块使用 one-slot-empty 规则区分空与满：存储区长度为 `N` 时，可用容量为 `N - 1`。`capacity` 的有效范围是 2 到 255；满缓冲区上的 push 返回 `RING_BUFFER_FULL`、置位溢出锁存，并保留所有尚未消费的数据。

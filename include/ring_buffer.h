@@ -23,12 +23,19 @@ RingBufferStatus ring_buffer_init(
     unsigned char *storage,
     unsigned char capacity);
 
+/*
+ * Reset changes producer-owned and consumer-owned state. The caller must
+ * ensure that the producer is quiesced, for example by disabling the UART RX
+ * interrupt, before calling this function.
+ */
 RingBufferStatus ring_buffer_reset(RingBuffer *buffer);
 
+/* Single-producer entry point. Only the producer may update head. */
 RingBufferStatus ring_buffer_push_isr(
     RingBuffer *buffer,
     unsigned char value);
 
+/* Single-consumer entry point. Only the consumer may update tail. */
 RingBufferStatus ring_buffer_pop(
     RingBuffer *buffer,
     unsigned char *value);
@@ -45,6 +52,11 @@ RingBufferStatus ring_buffer_is_full(
     const RingBuffer *buffer,
     unsigned char *is_full);
 
+/*
+ * This read-and-clear operation is not atomic with ring_buffer_push_isr().
+ * The caller must quiesce the producer for the complete call so that a new
+ * overflow event cannot be lost between the read and the clear.
+ */
 RingBufferStatus ring_buffer_take_overflow(
     RingBuffer *buffer,
     unsigned char *overflowed);
