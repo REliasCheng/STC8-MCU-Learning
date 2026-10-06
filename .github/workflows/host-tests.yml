@@ -1,0 +1,42 @@
+name: Portable Core Host Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  host-tests:
+    name: ${{ matrix.compiler }} / C89
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - gcc
+          - clang
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build portable ring buffer tests
+        run: |
+          mkdir -p build
+          ${{ matrix.compiler }} \
+            -std=c89 \
+            -Wall \
+            -Wextra \
+            -Werror \
+            -pedantic \
+            -Iinclude \
+            src/core/ring_buffer.c \
+            tests/test_ring_buffer.c \
+            -o build/ring_buffer_tests
+
+      - name: Run portable ring buffer tests
+        run: ./build/ring_buffer_tests
