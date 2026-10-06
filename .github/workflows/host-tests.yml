@@ -1,4 +1,4 @@
-name: Portable Core Host Tests
+name: Host Tests - Portable Core and Adapter Contract
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Build portable ring buffer tests
+      - name: Build host tests
         run: |
           mkdir -p build
           ${{ matrix.compiler }} \
@@ -37,6 +37,20 @@ jobs:
             src/core/ring_buffer.c \
             tests/test_ring_buffer.c \
             -o build/ring_buffer_tests
+          ${{ matrix.compiler }} \
+            -std=c89 \
+            -Wall \
+            -Wextra \
+            -Werror \
+            -pedantic \
+            -Iinclude \
+            -Iplatform/stc8 \
+            src/core/ring_buffer.c \
+            platform/stc8/stc8_uart.c \
+            tests/test_stc8_uart_contract.c \
+            -o build/stc8_uart_contract_tests
 
-      - name: Run portable ring buffer tests
-        run: ./build/ring_buffer_tests
+      - name: Run host tests
+        run: |
+          ./build/ring_buffer_tests
+          ./build/stc8_uart_contract_tests
