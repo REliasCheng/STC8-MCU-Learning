@@ -127,4 +127,3 @@ error_pct   = (actual_baud - requested_baud) / requested_baud * 100
 - [Keil C51 pointer and memory-space overview](https://www.keil.com/product/brochures/c51_v6.pdf)
 - [Keil C51 interrupt function syntax](https://www.keil.com/support/docs/1217.htm)
 - [Keil OH51 object-to-HEX converter](https://www.keil.com/support/index/oh51.htm)
-
