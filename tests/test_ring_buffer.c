@@ -460,6 +460,33 @@ static int test_operations_reject_invalid_object(void)
     return 0;
 }
 
+static int test_operations_reject_out_of_range_indices(void)
+{
+    RingBuffer buffer;
+    unsigned char storage[5] = {0U, 0U, 0U, 0U, 0xA5U};
+    unsigned char result = 0x5AU;
+
+    CHECK_EQUAL(RING_BUFFER_OK, ring_buffer_init(&buffer, storage, 4U));
+    buffer.head = 4U;
+    buffer.tail = 1U;
+    CHECK_EQUAL(RING_BUFFER_INVALID_ARGUMENT, ring_buffer_push_isr(&buffer, 0x33U));
+    CHECK_EQUAL(0xA5U, storage[4]);
+    CHECK_EQUAL(RING_BUFFER_INVALID_ARGUMENT, ring_buffer_available(&buffer, &result));
+    CHECK_EQUAL(0x5AU, result);
+    CHECK_EQUAL(RING_BUFFER_INVALID_ARGUMENT, ring_buffer_is_full(&buffer, &result));
+    CHECK_EQUAL(RING_BUFFER_INVALID_ARGUMENT, ring_buffer_reset(&buffer));
+    CHECK_EQUAL(4U, buffer.head);
+
+    buffer.head = 1U;
+    buffer.tail = 4U;
+    CHECK_EQUAL(RING_BUFFER_INVALID_ARGUMENT, ring_buffer_pop(&buffer, &result));
+    CHECK_EQUAL(0x5AU, result);
+    CHECK_EQUAL(RING_BUFFER_INVALID_ARGUMENT, ring_buffer_is_empty(&buffer, &result));
+    CHECK_EQUAL(RING_BUFFER_INVALID_ARGUMENT, ring_buffer_take_overflow(&buffer, &result));
+    CHECK_EQUAL(4U, buffer.tail);
+    return 0;
+}
+
 typedef int (*TestFunction)(void);
 
 typedef struct
@@ -495,7 +522,8 @@ int main(void)
         {"reset_null", test_reset_rejects_null},
         {"pop_null_output", test_pop_rejects_null_output},
         {"query_null_output", test_queries_reject_null_output},
-        {"invalid_object", test_operations_reject_invalid_object}
+        {"invalid_object", test_operations_reject_invalid_object},
+        {"invalid_indices", test_operations_reject_out_of_range_indices}
     };
     unsigned int index;
     unsigned int failed;
