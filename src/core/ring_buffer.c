@@ -7,7 +7,9 @@ static unsigned char ring_buffer_valid(const RingBuffer *buffer)
         return 0U;
     }
 
-    if ((buffer->storage == 0) || (buffer->capacity < 2U))
+    if ((buffer->storage == 0) || (buffer->capacity < 2U) ||
+        (buffer->head >= buffer->capacity) ||
+        (buffer->tail >= buffer->capacity))
     {
         return 0U;
     }
