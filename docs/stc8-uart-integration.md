@@ -63,7 +63,7 @@ Main-loop ring_buffer_pop()
 
 | Evidence | Status |
 | --- | --- |
-| Existing ring buffer tests | PASS：25 cases |
+| Existing ring buffer tests | PASS：26 cases |
 | Adapter contract tests | PASS：12 cases |
 | GCC strict C89 host build | PASS |
 | Clang strict C89 host build | Verified by GitHub Actions |

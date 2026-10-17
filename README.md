@@ -1,6 +1,6 @@
 # STC8-MCU-Learning
 
-面向 STC8H8K64U 的增强型 8051 事件驱动固件实验，包含可移植 UART RX 核心与原创 UART1 接收适配层。
+面向 STC8H8K64U 的增强型 8051 事件驱动固件实验，包含可移植 UART RX 核心、主循环帧收集器与原创 UART1 接收适配层。
 
 **⚙️ Peripheral Driver Progression**
 
@@ -14,12 +14,12 @@
 | Reference MCU | STC8H8K64U，enhanced 8051 |
 | Architecture | UART1 RX ISR → STC8 Adapter → Portable Ring Buffer → Main-loop Consumer |
 | Documentation | GPIO、Timer、UART、I²C、ADC、PWM、RTC、display and resource planning |
-| Public Implementation | Partial：C89 ring buffer、host-testable adapter contract and C51 UART1 ISR source |
-| Verification | Host GCC build and 37 behavior tests PASS；Keil target build and hardware evidence not provided |
+| Public Implementation | Partial：C89 ring buffer、frame collector、host-testable adapter contract and C51 UART1 ISR source |
+| Verification | Host GCC build and 44 behavior tests PASS；Keil target build and hardware evidence not provided |
 
 ## 📌 Overview
 
-仓库以文档方式整理 STC8 固件从寄存器控制、外设驱动、模块封装到事件协作的结构，并记录引脚复用、定时器占用和通信接口之间的资源约束。当前公开实现包含无动态内存的 C89 环形缓冲区、可独立进行 Host Test 的适配器合同，以及面向 STC8H8K64U UART1 的 C51 专用接收 ISR 源码。
+仓库以文档方式整理 STC8 固件从寄存器控制、外设驱动、模块封装到事件协作的结构，并记录引脚复用、定时器占用和通信接口之间的资源约束。当前公开实现包含无动态内存的 C89 环形缓冲区、主循环帧收集器、可独立进行 Host Test 的适配器合同，以及面向 STC8H8K64U UART1 的 C51 专用接收 ISR 源码。
 
 当前默认分支不分发课程工程、STC 厂商源码、启动文件、USB/HID 示例、RTX51 库或来源不明图片。C51 专用文件依赖工具链本地提供的 `STC8H.H`，该文件不在仓库中。Host Test 不能替代 Keil C51 目标构建、板端 UART 验证或运行证据。
 
@@ -35,13 +35,14 @@ Portable Ring Buffer
 Main-loop Consumer
 ```
 
-生产者只更新 `head`，消费者只更新 `tail`；缓冲区满时不覆盖未消费数据，并置位溢出锁存标志。UART1 包装层在读取后清除错误或复位缓冲区时短暂关闭 UART1 中断，避免与 ISR 发生读后清零竞态。当前实现不包含 parser、command layer、TX queue 或应用逻辑。
+生产者只更新 `head`，消费者只更新 `tail`；缓冲区满时不覆盖未消费数据，并置位溢出锁存标志。UART1 包装层在读取后清除错误或复位缓冲区时短暂关闭 UART1 中断，避免与 ISR 发生读后清零竞态。帧收集器只在主循环组合字节；当前实现不包含命令解析器、TX queue 或应用逻辑。
 
 ## ✨ Key Features
 
 | Capability | Documentation Entry |
 | --- | --- |
 | Portable UART RX core | [Portable UART RX Core](docs/portable-uart-core.md) |
+| Main-loop frame collector | [Portable UART Frame Collector](docs/uart-frame-collector.md) |
 | STC8H8K64U UART1 integration | [STC8 UART Integration](docs/stc8-uart-integration.md) |
 | Board resource planning | [Core Board and Pin Multiplexing](docs/核心板与引脚复用.md) |
 | Firmware structure progression | [Engineering Structure Evolution](docs/工程结构演进.md) |
@@ -55,8 +56,10 @@ Main-loop Consumer
 STC8-MCU-Learning/
 ├── .github/workflows/            # GCC and Clang host-test matrix
 ├── include/ring_buffer.h         # Portable public API
+├── include/uart_frame.h          # Main-loop frame collection API
 ├── platform/stc8/                # Adapter contract and C51 UART1 integration
 ├── src/core/ring_buffer.c        # C89 ring buffer implementation
+├── src/core/uart_frame.c         # C89 binary frame collector
 ├── tests/                        # Ring buffer and adapter contract host tests
 ├── README.md
 ├── LICENSE
@@ -69,6 +72,7 @@ STC8-MCU-Learning/
 
 - [Documentation Index](docs/README.md)
 - [Portable UART RX Core](docs/portable-uart-core.md)
+- [Portable UART Frame Collector](docs/uart-frame-collector.md)
 - [STC8 UART Integration](docs/stc8-uart-integration.md)
 - [Core Board and Pin Multiplexing](docs/核心板与引脚复用.md)
 - [Engineering Structure Evolution](docs/工程结构演进.md)
@@ -81,7 +85,8 @@ STC8-MCU-Learning/
 | Verification Layer | Status | Boundary |
 | --- | --- | --- |
 | Portable Core Host Build | PASS | GCC 16.1.0 with `-std=c89 -Wall -Wextra -Werror -pedantic` |
-| Ring Buffer Host Test | PASS | 25 behavior and boundary tests |
+| Ring Buffer Host Test | PASS | 26 behavior and boundary tests |
+| UART Frame Collector Host Test | PASS | 6 framing and recovery tests |
 | Adapter Contract Host Test | PASS | 12 lifecycle, forwarding, overflow and recovery tests |
 | Host CI | AUTOMATED | GitHub Actions compiles and runs both suites with GCC and Clang；the C51-specific ISR file is excluded |
 | STC8 / Keil Target Build | NOT PROVIDED | No reproducible target project, link result or HEX evidence |
