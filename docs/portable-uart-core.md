@@ -60,7 +60,7 @@ gcc -std=c89 -Wall -Wextra -Werror -pedantic \
 ./ring_buffer_tests
 ```
 
-将首个命令的 `gcc` 替换为 `clang` 可执行另一矩阵项。测试仅使用仓库内的小型断言工具，覆盖 25 项行为和边界条件。
+将首个命令的 `gcc` 替换为 `clang` 可执行另一矩阵项。测试仅使用仓库内的小型断言工具，覆盖 26 项行为和边界条件。
 
 ## Target Integration Boundary
 

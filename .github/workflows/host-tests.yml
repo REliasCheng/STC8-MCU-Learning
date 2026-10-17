@@ -47,6 +47,17 @@ jobs:
             -Werror \
             -pedantic \
             -Iinclude \
+            src/core/ring_buffer.c \
+            src/core/uart_frame.c \
+            tests/test_uart_frame.c \
+            -o build/uart_frame_tests
+          ${{ matrix.compiler }} \
+            -std=c89 \
+            -Wall \
+            -Wextra \
+            -Werror \
+            -pedantic \
+            -Iinclude \
             -Iplatform/stc8 \
             src/core/ring_buffer.c \
             platform/stc8/stc8_uart.c \
@@ -56,4 +67,5 @@ jobs:
       - name: Run host tests
         run: |
           ./build/ring_buffer_tests
+          ./build/uart_frame_tests
           ./build/stc8_uart_contract_tests
