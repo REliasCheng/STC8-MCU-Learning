@@ -10,15 +10,21 @@
 4. 如果 UART 队列报告字节丢失，主循环调用 `uart_frame_note_loss()`。当前部分帧和后续字节会被保守丢弃，直到下一处分隔符。调用者应在正确的临界区内读取 UART 错误锁存；本模块自身不管理中断。
 5. 该对象仅由主循环使用，不应在 ISR 和主循环之间共享可变状态。
 
+`uart_frame_drain_quiesced()` 提供环形缓冲区到帧收集器的 Host 可测交接。调用方必须先停止 RX producer，在同一个暂停区间内读取 `stc8_uart_rx_take_error_quiesced()`，把非 `STC8_UART_OK` 转为本次 `transport_loss` 输入，然后调用 drain；完成后由调用方决定何时恢复 producer。drain 同时读取并清除 RingBuffer 的溢出位，任一丢字信号都会丢弃当前片段，直到下一个分隔符返回 `UART_FRAME_DROPPED`。每次调用最多返回一个完整帧或丢弃事件；有更多排队字节时，继续调用并把新的错误快照传入。缓冲区状态无效时返回 `UART_FRAME_BUFFER_ERROR`，不会输出帧。
+
+暂停 producer 的完整区间、串口硬件接收缓存及允许的暂停时长必须由目标应用验证。Host 测试只验证软件交接语义，不证明目标 ISR 时序或无硬件丢字。
+
 调用者可选择 `\n` 用于文本行，也可选择其他分隔字节；本模块不假定设备协议、字符编码或命令语义。
 
 ## Host 验证
 
 ```sh
 gcc -std=c89 -Wall -Wextra -Werror -pedantic \
-  -Iinclude src/core/ring_buffer.c src/core/uart_frame.c tests/test_uart_frame.c \
+  -Iinclude -Iplatform/stc8 src/core/ring_buffer.c src/core/uart_frame.c \
+  src/core/uart_frame_drain.c \
+  platform/stc8/stc8_uart.c tests/test_uart_frame.c \
   -o uart_frame_tests
 ./uart_frame_tests
 ```
 
-测试覆盖连续帧、空帧、二进制零值、恰好达到容量、超长帧恢复、传输丢字后的恢复、无效参数，以及实际 `RingBuffer` 到帧收集器的字节流。GitHub Actions 使用 GCC 与 Clang 执行同一组测试。Host 测试不证明 Keil C51 构建、UART 时序或板端运行。
+测试覆盖连续帧、空帧、二进制零值、恰好达到容量、超长帧恢复、传输丢字后的恢复、无效参数，以及实际 `STC8 UART RX Adapter → RingBuffer → Frame Collector` 的字节流和错误交接。GitHub Actions 使用 GCC 与 Clang 执行同一组测试。Host 测试不证明 Keil C51 构建、UART 时序或板端运行。

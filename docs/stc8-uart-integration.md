@@ -58,6 +58,7 @@ Main-loop ring_buffer_pop()
 - 环形缓冲区满时，不覆盖旧数据，并锁存 `STC8_UART_RX_OVERFLOW`。
 - ISR 中不执行日志、字符串处理、协议解析、延时或动态分配。
 - `stc8_uart_rx_take_error_quiesced()` 是 Host 可测的底层读后清零接口，只允许在 producer 已暂停时调用。
+- 主循环可在同一 producer 暂停区间内读取错误锁存并调用 `uart_frame_drain_quiesced()`；该函数同时处理环形缓冲区溢出标志，并在丢字后跳过残缺帧。它不暂停中断，也不定义目标板允许的暂停时长。
 
 ## Verification Boundary
 
