@@ -15,7 +15,7 @@
 | Architecture | UART1 RX ISR → STC8 Adapter → Portable Ring Buffer → Main-loop Consumer |
 | Documentation | GPIO、Timer、UART、I²C、ADC、PWM、RTC、display and resource planning |
 | Public Implementation | Partial：C89 ring buffer、frame collector、host-testable adapter contract and C51 UART1 ISR source |
-| Verification | Host GCC build and 44 behavior tests PASS；Keil target build and hardware evidence not provided |
+| Verification | Host GCC build and 48 behavior tests PASS；Keil target build and hardware evidence not provided |
 
 ## 📌 Overview
 
@@ -35,7 +35,7 @@ Portable Ring Buffer
 Main-loop Consumer
 ```
 
-生产者只更新 `head`，消费者只更新 `tail`；缓冲区满时不覆盖未消费数据，并置位溢出锁存标志。UART1 包装层在读取后清除错误或复位缓冲区时短暂关闭 UART1 中断，避免与 ISR 发生读后清零竞态。帧收集器只在主循环组合字节；当前实现不包含命令解析器、TX queue 或应用逻辑。
+生产者只更新 `head`，消费者只更新 `tail`；缓冲区满时不覆盖未消费数据，并置位溢出锁存标志。UART1 包装层在读取后清除错误或复位缓冲区时短暂关闭 UART1 中断，避免与 ISR 发生读后清零竞态。帧收集器只在主循环组合字节；可用显式 producer 暂停合同把适配器错误与帧收集连接起来，目标板暂停时长未验证。当前实现不包含命令解析器、TX queue 或应用逻辑。
 
 ## ✨ Key Features
 
@@ -60,6 +60,7 @@ STC8-MCU-Learning/
 ├── platform/stc8/                # Adapter contract and C51 UART1 integration
 ├── src/core/ring_buffer.c        # C89 ring buffer implementation
 ├── src/core/uart_frame.c         # C89 binary frame collector
+├── src/core/uart_frame_drain.c   # Quiesced queue-to-frame handoff
 ├── tests/                        # Ring buffer and adapter contract host tests
 ├── README.md
 ├── LICENSE
@@ -86,9 +87,9 @@ STC8-MCU-Learning/
 | --- | --- | --- |
 | Portable Core Host Build | PASS | GCC 16.1.0 with `-std=c89 -Wall -Wextra -Werror -pedantic` |
 | Ring Buffer Host Test | PASS | 26 behavior and boundary tests |
-| UART Frame Collector Host Test | PASS | 6 framing and recovery tests |
+| UART Frame Collector Host Test | PASS | 10 framing, recovery and adapter integration tests |
 | Adapter Contract Host Test | PASS | 12 lifecycle, forwarding, overflow and recovery tests |
-| Host CI | AUTOMATED | GitHub Actions compiles and runs both suites with GCC and Clang；the C51-specific ISR file is excluded |
+| Host CI | AUTOMATED | GitHub Actions compiles and runs ring buffer、frame collector 与 adapter 三组测试（GCC/Clang）；the C51-specific ISR file is excluded |
 | STC8 / Keil Target Build | NOT PROVIDED | No reproducible target project, link result or HEX evidence |
 | Hardware Validation | NOT PROVIDED | No reviewable STC8 board test record |
 | Runtime Evidence | NOT PROVIDED | No serial log, baud measurement or logic-analyzer record |

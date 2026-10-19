@@ -47,8 +47,11 @@ jobs:
             -Werror \
             -pedantic \
             -Iinclude \
+            -Iplatform/stc8 \
             src/core/ring_buffer.c \
             src/core/uart_frame.c \
+            src/core/uart_frame_drain.c \
+            platform/stc8/stc8_uart.c \
             tests/test_uart_frame.c \
             -o build/uart_frame_tests
           ${{ matrix.compiler }} \
