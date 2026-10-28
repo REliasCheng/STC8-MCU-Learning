@@ -3,6 +3,7 @@
 - [Portable UART RX Core](portable-uart-core.md)
 - [Portable UART Frame Collector](uart-frame-collector.md)
 - [STC8 UART Integration](stc8-uart-integration.md)
+- [STC8H8K64U SDCC Target Build](sdcc-target-build.md)
 - [STC8H8K64U Keil C51 Target Build Preparation](keil-target-build.md)
 - [开发环境与构建](开发环境与构建.md)
 - [核心板与引脚复用](核心板与引脚复用.md)

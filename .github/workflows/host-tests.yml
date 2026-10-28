@@ -72,3 +72,27 @@ jobs:
           ./build/ring_buffer_tests
           ./build/uart_frame_tests
           ./build/stc8_uart_contract_tests
+
+  sdcc-target:
+    name: SDCC MCS-51 target compile/link/HEX
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Install Ubuntu SDCC
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sdcc
+          sdcc -v
+
+      - name: Compile, link and validate two fresh target builds
+        run: |
+          python3 scripts/build_sdcc_target.py --output "$RUNNER_TEMP/stc8-target-first"
+          python3 scripts/build_sdcc_target.py --output "$RUNNER_TEMP/stc8-target-second"
+          cmp "$RUNNER_TEMP/stc8-target-first/stc8_uart_foundation.hex" \
+              "$RUNNER_TEMP/stc8-target-second/stc8_uart_foundation.hex"
+          sha256sum "$RUNNER_TEMP/stc8-target-first/stc8_uart_foundation.hex"

@@ -14,14 +14,14 @@
 | Reference MCU | STC8H8K64U，enhanced 8051 |
 | Architecture | UART1 RX ISR → STC8 Adapter → Portable Ring Buffer → Main-loop Consumer |
 | Documentation | GPIO、Timer、UART、I²C、ADC、PWM、RTC、display and resource planning |
-| Public Implementation | Partial：C89 ring buffer、frame collector、host-testable adapter contract and C51 UART1 ISR source |
-| Verification | Host GCC build and 48 behavior tests PASS；Keil target build and hardware evidence not provided |
+| Public Implementation | C89 ring buffer、frame collector、host-testable adapter contract, C51 ISR source and original SDCC target application |
+| Verification | 48 Host tests PASS；SDCC MCS-51 compile/link/HEX and clean rebuild PASS；Keil and hardware not verified |
 
 ## 📌 Overview
 
 仓库以文档方式整理 STC8 固件从寄存器控制、外设驱动、模块封装到事件协作的结构，并记录引脚复用、定时器占用和通信接口之间的资源约束。当前公开实现包含无动态内存的 C89 环形缓冲区、主循环帧收集器、可独立进行 Host Test 的适配器合同，以及面向 STC8H8K64U UART1 的 C51 专用接收 ISR 源码。
 
-当前默认分支不分发课程工程、STC 厂商源码、启动文件、USB/HID 示例、RTX51 库或来源不明图片。C51 专用文件依赖工具链本地提供的 `STC8H.H`，该文件不在仓库中。Host Test 不能替代 Keil C51 目标构建、板端 UART 验证或运行证据。
+当前默认分支不分发课程工程、STC 厂商源码、启动文件、USB/HID 示例、RTX51 库或来源不明图片。C51 专用文件依赖外部 `STC8H.H`；另有原创最小 SDCC 寄存器声明与应用，已完成 MCS-51 目标编译、链接和 HEX 校验。板卡型号、封装、实际时钟和接线仍未确认，目标构建不能替代板端 UART 或运行验证。
 
 ## 🏗️ Architecture
 
@@ -44,6 +44,7 @@ Main-loop Consumer
 | Portable UART RX core | [Portable UART RX Core](docs/portable-uart-core.md) |
 | Main-loop frame collector | [Portable UART Frame Collector](docs/uart-frame-collector.md) |
 | STC8H8K64U UART1 integration | [STC8 UART Integration](docs/stc8-uart-integration.md) |
+| SDCC target build | [Reproducible SDCC target build](docs/sdcc-target-build.md) |
 | Board resource planning | [Core Board and Pin Multiplexing](docs/核心板与引脚复用.md) |
 | Firmware structure progression | [Engineering Structure Evolution](docs/工程结构演进.md) |
 | Toolchain boundary | [Development Environment and Build](docs/开发环境与构建.md) |
@@ -54,10 +55,12 @@ Main-loop Consumer
 
 ```text
 STC8-MCU-Learning/
-├── .github/workflows/            # GCC and Clang host-test matrix
+├── .github/workflows/            # GCC/Clang host tests and SDCC target build
 ├── include/ring_buffer.h         # Portable public API
 ├── include/uart_frame.h          # Main-loop frame collection API
-├── platform/stc8/                # Adapter contract and C51 UART1 integration
+├── platform/stc8/                # Adapter contract, C51 and SDCC UART1 integration
+├── target/sdcc/main.c            # Original minimal target application
+├── scripts/build_sdcc_target.py  # Reproducible compile/link/HEX checks
 ├── src/core/ring_buffer.c        # C89 ring buffer implementation
 ├── src/core/uart_frame.c         # C89 binary frame collector
 ├── src/core/uart_frame_drain.c   # Quiesced queue-to-frame handoff
@@ -75,6 +78,7 @@ STC8-MCU-Learning/
 - [Portable UART RX Core](docs/portable-uart-core.md)
 - [Portable UART Frame Collector](docs/uart-frame-collector.md)
 - [STC8 UART Integration](docs/stc8-uart-integration.md)
+- [Reproducible SDCC target build](docs/sdcc-target-build.md)
 - [Core Board and Pin Multiplexing](docs/核心板与引脚复用.md)
 - [Engineering Structure Evolution](docs/工程结构演进.md)
 - [Development Environment and Build](docs/开发环境与构建.md)
@@ -90,7 +94,8 @@ STC8-MCU-Learning/
 | UART Frame Collector Host Test | PASS | 10 framing, recovery and adapter integration tests |
 | Adapter Contract Host Test | PASS | 12 lifecycle, forwarding, overflow and recovery tests |
 | Host CI | AUTOMATED | GitHub Actions compiles and runs ring buffer、frame collector 与 adapter 三组测试（GCC/Clang）；the C51-specific ISR file is excluded |
-| STC8 / Keil Target Build | NOT PROVIDED | No reproducible target project, link result or HEX evidence |
+| STC8 / SDCC Target Build | PASS locally | SDCC 4.6.4 MCS-51 编译、链接、HEX 校验及两次全新构建哈希一致；详见构建文档 |
+| STC8 / Keil Target Build | NOT PROVIDED | 本机 Keil 使用授权与支持文件来源未证实，未调用 |
 | Hardware Validation | NOT PROVIDED | No reviewable STC8 board test record |
 | Runtime Evidence | NOT PROVIDED | No serial log, baud measurement or logic-analyzer record |
 
