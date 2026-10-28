@@ -32,8 +32,11 @@ All translation units use `-mmcs51 --std-c89 --model-small --stack-auto --Werror
 | CODE | 4,069 of 65,536 bytes |
 | XDATA | 138 of 8,192 bytes |
 | Stack | Starts at `0x21`; 223 address bytes available per linker report, not a measured high-water mark |
+| Internal DATA/IDATA map | Register bank 0 occupies `0x00`–`0x07`; direct DATA occupies `0x08`–`0x0F`, bit register area `0x20`, and the linker reports 16 spare direct bytes at `0x10`–`0x1F`; dynamic stack uses the upper indirect address range. This is a layout report, not peak stack measurement. |
 | Clean rebuild | PASS, two separate new output directories produced byte-identical HEX |
 | Host tests | PASS, 26 ring-buffer, 10 frame-collector, 12 adapter tests (48 total) with GCC C89 strict warnings |
+
+The PR's Ubuntu 24.04 CI used SDCC 4.2.0 #13081 and independently produced CODE 3,929 bytes, XDATA 138 bytes, and a 10,874-byte HEX with SHA-256 `5093486f6a75ef83156dfd02a4619a9c58e704ea7c7f0d472fe9dc5b8c922aec`; its two fresh builds matched. HEX hashes from different compiler versions are not expected to match.
 
 ## Configuration assumptions and next evidence
 
