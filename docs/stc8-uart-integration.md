@@ -70,8 +70,9 @@ Main-loop ring_buffer_pop()
 | Clang strict C89 host build | Verified by GitHub Actions |
 | C51-specific source review | Completed against documented register contract |
 | Keil C51 target compile/link | NOT PROVIDED |
-| HEX generation | NOT PROVIDED |
+| SDCC MCS-51 target compile/link/HEX | PASS：原创独立适配与应用，见 [构建证据](sdcc-target-build.md) |
+| Keil C51 HEX generation | NOT PROVIDED |
 | Hardware UART validation | NOT PROVIDED |
 | Serial or logic-analyzer evidence | NOT PROVIDED |
 
-本阶段检测到本机存在 C51 工具文件，但其安装来源与许可状态未建立可公开复现的证据，因此未把该环境用于 Target Build 声明，也未提交 `.uvprojx`、启动文件或厂商头文件。
+本机存在 C51 工具文件，但其安装来源与许可状态未建立可公开复现的证据，因此没有调用 Keil。SDCC 构建使用原创最小寄存器声明和工具链自带启动/运行库；没有提交 `.uvprojx`、厂商头文件、启动文件或 HEX。SDCC 编译通过不代表 UART 在目标板上运行。
